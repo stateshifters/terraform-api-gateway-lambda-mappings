@@ -15,12 +15,6 @@ resource "aws_api_gateway_method" "endpoint-method" {
   authorization = "NONE"
 }
 
-module "cors" {
-  source = "github.com/stateshifters/terraform-api-gateway-cors"
-  api_id = "${var.api_id}"
-  resource_id = "${var.resource_id}"
-}
-
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
   rest_api_id   = "${var.api_id}"
   resource_id   = "${var.resource_id}"
