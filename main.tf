@@ -1,23 +1,16 @@
 variable "api_id" {}
-variable "parent_resource_id" {}
-variable "path" {}
+variable "resource_id" {}
 variable "method" {}
+variable "path" {}
 variable "lambda" {
   type = "map"
 }
 variable "stage" {}
 variable "main_resource" {}
 
-resource "aws_api_gateway_resource" "api-gateway-resource" {
-  rest_api_id = "${var.api_id}"
-  parent_id   = "${var.parent_resource_id}"
-  path_part   = "${var.path}"
-}
-
-
 resource "aws_api_gateway_method" "endpoint-method" {
   rest_api_id   = "${var.api_id}"
-  resource_id   = "${aws_api_gateway_resource.api-gateway-resource.id}"
+  resource_id   = "${var.resource_id}"
   http_method   = "${var.method}"
   authorization = "NONE"
 }
@@ -25,12 +18,12 @@ resource "aws_api_gateway_method" "endpoint-method" {
 module "cors" {
   source = "github.com/stateshifters/terraform-api-gateway-cors"
   api_id = "${var.api_id}"
-  resource_id = "${aws_api_gateway_resource.api-gateway-resource.id}"
+  resource_id = "${var.resource_id}"
 }
 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
   rest_api_id   = "${var.api_id}"
-  resource_id   = "${aws_api_gateway_resource.api-gateway-resource.id}"
+  resource_id   = "${var.resource_id}"
   http_method   = "${aws_api_gateway_method.endpoint-method.http_method}"
   status_code   = "200"
   response_parameters = {
@@ -63,7 +56,7 @@ resource "aws_lambda_permission" "twitch-auth-get" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.lambda["function_name"]}"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${var.main_resource}/*/${aws_api_gateway_integration.endpoint-integration.http_method}${aws_api_gateway_resource.api-gateway-resource.path}"
+  source_arn = "${var.main_resource}/*/${aws_api_gateway_integration.endpoint-integration.http_method}${var.path}"
 }
 
 output "url" {
