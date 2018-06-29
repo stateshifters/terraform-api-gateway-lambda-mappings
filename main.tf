@@ -2,6 +2,9 @@ variable "api_id" {}
 variable "resource_id" {}
 variable "method" {}
 variable "path" {}
+variable "needsKey" {
+  default = true
+}
 variable "lambda" {
   type = "map"
 }
@@ -13,6 +16,7 @@ resource "aws_api_gateway_method" "endpoint-method" {
   resource_id   = "${var.resource_id}"
   http_method   = "${var.method}"
   authorization = "NONE"
+  api_key_required = "${var.needsKey}"
 }
 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
