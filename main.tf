@@ -3,7 +3,7 @@ variable "resource_id" {}
 variable "method" {}
 variable "path" {}
 variable "needsKey" {
-  default = true
+  default = false
 }
 variable "lambda" {
   type = "map"
