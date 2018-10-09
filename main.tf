@@ -49,8 +49,8 @@ resource "aws_api_gateway_deployment" "deployment" {
   stage_name  = "${var.stage}"
 }
 
-resource "aws_lambda_permission" "twitch-auth-get" {
-  statement_id  = "AllowAPIGatewayInvoke-get"
+resource "aws_lambda_permission" "lambda-method-auth" {
+  statement_id  = "AllowAPIGatewayInvoke-${aws_api_gateway_integration.endpoint-integration.http_method}"
   action        = "lambda:InvokeFunction"
   function_name = "${var.lambda["function_name"]}"
   principal     = "apigateway.amazonaws.com"
